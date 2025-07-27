@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蔡允維｜機器人創新者作品集</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Light Beige, Dark Slate, Muted Teal Accent) -->
+    <!-- Application Structure Plan: A single-page narrative portfolio. The structure flows from a high-level introduction (Hero) to a chronological journey (Timeline), then dives into capabilities (Skills & Projects), and concludes with future aspirations (Vision). This non-linear but guided structure allows admissions officers to get a quick overview or deep-dive into specific areas of interest (like projects via filtering) without losing context, which is more effective than a linear PDF. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Career milestones -> Goal: Show Growth -> Viz/Presentation: Interactive vertical timeline (HTML/CSS/JS) -> Interaction: Scroll-based animations -> Justification: More dynamic and engaging than a static list, tells a story of progression.
+        - Report Info: APCS/IELTS scores -> Goal: Inform -> Viz/Presentation: Separated Bar charts (Chart.js) for programming and language skills -> Interaction: Tooltips on hover -> Justification: Provides a clearer, more organized, and visually appealing summary of certified skills.
+        - Report Info: Diverse skill set (technical/soft) -> Goal: Organize/Compare -> Viz/Presentation: Radar chart (Chart.js) -> Interaction: Tooltips on hover -> Justification: Offers a holistic, high-impact visualization of his well-rounded capabilities.
+        - Report Info: Multiple complex projects -> Goal: Organize/Detail -> Viz/Presentation: Filterable card grid with modals (HTML/CSS/JS) -> Interaction: Category filtering and clicking cards to open detailed modal views -> Justification: Enables user-driven exploration of his work. The modal keeps users on the page, maintaining the SPA experience while providing rich, in-depth information for those interested.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #FDFBF5;
+            color: #334155;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 280px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 320px;
+            }
+        }
+        .timeline-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .timeline-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .modal-enter {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-leave {
+            animation: fadeOut 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); }
+        }
+        .project-title-fix {
+             font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-40 transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="text-xl font-bold text-slate-700">蔡允維</a>
+                </div>
+                <nav class="hidden md:flex md:space-x-8">
+                    <a href="#journey" class="text-gray-500 hover:text-cyan-700 transition-colors">我的歷程</a>
+                    <a href="#skills" class="text-gray-500 hover:text-cyan-700 transition-colors">核心能力</a>
+                    <a href="#projects" class="text-gray-500 hover:text-cyan-700 transition-colors">專案實證</a>
+                    <a href="#vision" class="text-gray-500 hover:text-cyan-700 transition-colors">未來願景</a>
+                </nav>
+                <a href="#contact" class="hidden md:block bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-all">聯絡我</a>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-slate-500 hover:text-slate-700">
+                        <span class="sr-only">Open menu</span>
+                        <div class="w-6 h-0.5 bg-slate-600 mb-1.5"></div>
+                        <div class="w-6 h-0.5 bg-slate-600"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#journey" class="block py-2 px-4 text-sm text-gray-500 hover:bg-gray-100">我的歷程</a>
+            <a href="#skills" class="block py-2 px-4 text-sm text-gray-500 hover:bg-gray-100">核心能力</a>
+            <a href="#projects" class="block py-2 px-4 text-sm text-gray-500 hover:bg-gray-100">專案實證</a>
+            <a href="#vision" class="block py-2 px-4 text-sm text-gray-500 hover:bg-gray-100">未來願景</a>
+            <a href="#contact" class="block py-2 px-4 text-sm text-gray-500 hover:bg-gray-100">聯絡我</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="relative min-h-screen flex items-center bg-stone-100">
+            <div class="absolute inset-0 bg-grid-slate-200 [mask-image:linear-gradient(to_bottom,white_20%,transparent_75%)]"></div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-slate-800">蔡允維</h1>
+                <p class="mt-4 text-lg md:text-2xl text-cyan-700 font-semibold">WRO國際機器人奧林匹亞 世界冠軍</p>
+                <p class="mt-6 max-w-2xl mx-auto text-base md:text-lg text-slate-600">
+                    我打造機器人以解決複雜問題。從贏得WRO世界冠軍到開發全向輪自走車，我對機械、電子與軟體的交集充滿熱情。我渴望在清華大學動力機械工程學系，將我的夢想付諸實現。
+                </p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <a href="#projects" class="bg-cyan-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-cyan-700 transition-transform hover:scale-105">探索我的專案</a>
+                    <a href="#journey" class="bg-white text-slate-700 px-6 py-3 rounded-lg font-semibold ring-1 ring-slate-300 hover:bg-slate-50 transition-transform hover:scale-105">回顧我的歷程</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="journey" class="py-20 sm:py-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">我的歷程</h2>
+                    <p class="mt-4 text-lg text-slate-600">從雙手探索世界的好奇男孩，到站上世界舞台的機器人選手。</p>
+                </div>
+                <div class="relative mt-16 max-w-3xl mx-auto">
+                    <div class="absolute left-1/2 -ml-px w-0.5 h-full bg-slate-200" aria-hidden="true"></div>
+                    <div id="timeline-container" class="space-y-16">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 sm:py-32 bg-stone-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">核心能力</h2>
+                    <p class="mt-4 text-lg text-slate-600">我的技能樹，由熱情與實踐灌溉而成。</p>
+                </div>
+                <div class="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
+                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-700 mb-4 text-center">程式能力認證 (APCS)</h3>
+                            <div class="chart-container">
+                                <canvas id="apcsChart"></canvas>
+                            </div>
+                            <p class="text-center text-sm text-slate-500 mt-2">大學程式設計先修檢測成績</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-slate-700 mb-4 text-center">語言能力認證</h3>
+                            <div class="chart-container">
+                                <canvas id="languageChart"></canvas>
+                            </div>
+                             <p class="text-center text-sm text-slate-500 mt-2">IELTS國際英語能力證明</p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <h3 class="text-xl font-semibold text-slate-700 mb-4 text-center">綜合能力雷達圖</h3>
+                        <div class="chart-container">
+                            <canvas id="skillsRadarChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm text-slate-500 mt-2">我的能力不僅限於技術，更包含解決問題、團隊合作與跨領域思維。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 sm:py-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">專案實證</h2>
+                    <p class="mt-4 text-lg text-slate-600">從競賽到自主學習，每個專案都是我能力的證明。</p>
+                </div>
+                <div class="mt-12 flex justify-center flex-wrap gap-2 sm:gap-4" id="filters">
+                    <button class="filter-btn active bg-cyan-600 text-white px-4 py-2 rounded-full text-sm font-medium" data-filter="all">全部</button>
+                    <button class="filter-btn bg-white text-slate-600 px-4 py-2 rounded-full text-sm font-medium ring-1 ring-slate-200 hover:bg-slate-50" data-filter="國際競賽">國際競賽</button>
+                    <button class="filter-btn bg-white text-slate-600 px-4 py-2 rounded-full text-sm font-medium ring-1 ring-slate-200 hover:bg-slate-50" data-filter="自主學習">自主學習</button>
+                    <button class="filter-btn bg-white text-slate-600 px-4 py-2 rounded-full text-sm font-medium ring-1 ring-slate-200 hover:bg-slate-50" data-filter="跨領域">跨領域</button>
+                </div>
+                <div id="project-gallery" class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                </div>
+            </div>
+        </section>
+        
+        <section id="vision" class="py-20 sm:py-32 bg-stone-100">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">我的願景：成為頂尖的機器人工程師</h2>
+                    <p class="mt-6 text-lg text-slate-600">
+                        從波士頓動力公司的人形機器人Atlas身上，我看到了機器人技術的無限可能。我的夢想是打造一台能夠真正改變世界、幫助人類的機器人。我深信，清華大學動力機械工程學系提供的扎實理論基礎與「$1+x=\infty$」的跨領域學習環境，是我實現這個夢想的最佳起點。我期待能在此深化我的專業知識，與志同道合的夥伴一同探索未知，將腦中的藍圖化為現實。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact" class="bg-slate-800 text-slate-300 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h3 class="text-2xl font-bold text-white">聯絡我</h3>
+            <p class="mt-4 max-w-md mx-auto">若您對我的專案或經歷感興趣，歡迎隨時與我聯繫。</p>
+            <div class="mt-6 flex justify-center items-center space-x-6 text-lg">
+                <a href="mailto:fatibrother@gmail.com" class="hover:text-cyan-400 transition-colors">
+                    <span>✉️</span> fatibrother@gmail.com
+                </a>
+                <span>|</span>
+                <span>📱 0906-832-262</span>
+            </div>
+            <p class="mt-8 text-sm text-slate-400">&copy; 2025 Tsai Yun-Wei. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative shadow-2xl">
+            <button id="close-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+                <span class="sr-only">Close</span>
+                <div class="w-6 h-0.5 bg-current transform rotate-45 translate-y-px"></div>
+                <div class="w-6 h-0.5 bg-current transform -rotate-45"></div>
+            </button>
+            <div id="modal-body" class="p-6 sm:p-8 lg:p-12">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timelineData = [
+                { year: '4歲', title: '初探機器人', description: '從四歲起接觸機器人，廢寢忘食地鑽研，開啟了我的探索之旅。', side: 'left' },
+                { year: '國中', title: 'WRO競賽初體驗', description: '首次參加WRO競賽雖未獲佳績，但失敗的經驗成為我前進的最大動力。', side: 'right' },
+                { year: '國三', title: '自學C語言', description: '為突破EV3圖形化程式的效能瓶頸，我毅然決定自學C語言與RobotC，為日後的勝利奠定基礎。', side: 'left' },
+                { year: '2022', title: 'WRO世界冠軍', description: '在德國舉辦的WRO國際決賽中，我們擊敗強敵，榮獲足球賽世界冠軍，證明了我們的努力與策略。', side: 'right' },
+                { year: '高中', title: '挑戰跨領域', description: '跳出樂高框架，學習使用Arduino，挑戰金屬材料機器人，並涉獵OpenCV視覺辨識。', side: 'left' },
+                { year: '2023', title: '自主學習展現成果', description: '自製的全向輪自走車，從演算法到硬體一手包辦，入選台中市優秀自主學習作品。', side: 'right' },
+                { year: '未來', title: '邁向清華動機', description: '帶著對機器人的熱情與夢想，我將在清華大學繼續我的探索與創造之旅。', side: 'left' }
+            ];
+
+            const projectsData = {
+                'wro-champion': {
+                    title: 'WRO 國際機器人奧林匹亞 世界冠軍',
+                    category: '國際競賽',
+                    image: 'https://www.era.org.tw/main/wp-content/uploads/2022/12/logo-wro.webp',
+                    content: `
+                        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 project-title-fix">WRO 國際機器人奧林匹亞 世界冠軍</h3>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-cyan-100 text-cyan-800 text-xs font-medium px-2.5 py-0.5 rounded-full">國際競賽</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">C語言</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">EV3</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">團隊合作</span>
+                        </div>
+                        <img src="https://www.era.org.tw/main/wp-content/uploads/2022/12/logo-wro.webp" class="w-full h-auto rounded-lg my-6" alt="WRO Champion Award Moment">
+                        <div class="space-y-6 text-slate-600">
+                            <div><h4 class="font-semibold text-lg text-slate-700">挑戰：</h4><p>WRO足球賽規則要求機器人完全自主，但原有的EV3圖形化程式效能低下，限制了戰術的複雜度與執行效率。這是我們在初次參賽時面臨的最大瓶頸。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">我的角色與執行過程：</h4><p>作為團隊的主力程式設計師，我主動提出並自學了C語言與RobotC。我將團隊所有的戰術邏輯，包括定位、球路預測和攻防策略，全部用C語言重新實現。這個決定性的轉變，讓我們的機器人運算效率與反應速度獲得了數倍的提升，得以執行更複雜的「一台進攻、一台防守」的無通訊協同戰術。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">成果與實證：</h4><p>我們憑藉卓越的軟硬體整合與戰術設計，在2022年德國多特蒙德舉辦的WRO國際奧林匹亞決賽中，從全球強隊中脫穎而出，奪得足球賽項目世界冠軍。這不僅是技術的勝利，更是團隊合作與不懈努力的證明。</p></div>
+                        </div>
+                    `
+                },
+                'omni-wheel-car': {
+                    title: '自製全向輪自走車',
+                    category: '自主學習',
+                    image: 'https://lh3.googleusercontent.com/pw/AP1GczPQeqeb98eNTBJp-j0cJjCDJvZGpQEM2qHPQNtxZgMAg0bTVQh452mvbeISt0hNGYGQi6HxZ9FyazSSScnb8LGHFRZABmYcwrlGKke8vSxt82aRwePOQuczVIlYL7Uqw5JNTsVyPMjn6hGf8YCdQn4XEw=w728-h970-s-no-gm',
+                    content: `
+                        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 project-title-fix">自製全向輪自走車</h3>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-medium px-2.5 py-0.5 rounded-full">自主學習</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Arduino</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">演算法</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">從零到一</span>
+                        </div>
+                        <img src=https://lh3.googleusercontent.com/pw/AP1GczPQeqeb98eNTBJp-j0cJjCDJvZGpQEM2qHPQNtxZgMAg0bTVQh452mvbeISt0hNGYGQi6HxZ9FyazSSScnb8LGHFRZABmYcwrlGKke8vSxt82aRwePOQuczVIlYL7Uqw5JNTsVyPMjn6hGf8YCdQn4XEw=w728-h970-s-no-gm型" class="w-full h-auto rounded-lg my-6" alt="Omni-wheel Car Prototype">
+                        <div class="space-y-6 text-slate-600">
+                            <div><h4 class="font-semibold text-lg text-slate-700">挑戰：</h4><p>如何不依賴現成套件，從零開始設計並實現一台能夠360度自由移動的全向輪自走車，並自行撰寫其運動控制演算法。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">我的角色與執行過程：</h4><p>我獨立完成了整個專案。從研究全向輪的運動原理，到使用Arduino平台進行開發，我自行編寫了將遙控器訊號解算為四個馬達獨立轉速的複雜演算法。過程中，我遇到了馬達扭力不足、車體結構不穩等問題，並透過不斷的測試、分析與重新設計，逐一克服困難。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">成果與實證：</h4><p>最終成功打造出一台反應靈敏、移動流暢的全向輪自走車。此專案不僅鍛鍊了我的演算法設計與硬體整合能力，更獲選為台中市的優秀自主學習作品，證明了我獨立解決複雜工程問題的能力。</p></div>
+                        </div>
+                    `
+                },
+                'tech-competition': {
+                    title: '全國高中生活科技競賽 - 最佳美術獎',
+                    category: '跨領域',
+                    image: 'https://i.ytimg.com/vi/_Pthcam-w_c/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGFMgZSg-MA8=&rs=AOn4CLB_WNSivjdyx5k2YlX__dU3550HIQ',
+                    content: `
+                        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 project-title-fix">全國高中生活科技競賽 - 最佳美術獎</h3>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full">跨領域</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">團隊領導</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">系統整合</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">3D建模</span>
+                        </div>
+                        <img src="https://i.ytimg.com/vi/_Pthcam-w_c/hq720.jpg?sqp=-oaymwE7CK4FEIIDSFryq4qpAy0IARUAAAAAGAElAADIQj0AgKJD8AEB-AH-CYAC0AWKAgwIABABGFMgZSg-MA8=&rs=AOn4CLB_WNSivjdyx5k2YlX__dU3550HIQ" class="w-full h-auto rounded-lg my-6" alt="Tech Competition Project">
+                        <div class="space-y-6 text-slate-600">
+                            <div><h4 class="font-semibold text-lg text-slate-700">挑戰：</h4><p>在有限時間內，領導團隊打造一個結合機械、電路、程式與美術設計的複雜互動裝置，並確保各個子系統能夠穩定協同工作。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">我的角色與執行過程：</h4><p>作為團隊的領導者與技術核心，我負責整體架構的設計與整合。這包括協調超過16顆馬達、多塊控制板，並開發一個自製手機App來進行遠端遙控。我同時也負責了部分3D模型的設計與列印，確保機械結構的精準度。我帶領團隊進行腦力激盪，將創意與技術可行性相結合。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">成果與實證：</h4><p>我們的作品因其精巧的設計與高度的整合性，最終榮獲「最佳美術獎」。這個專案不僅證明了我的系統整合能力，更展現了我帶領團隊進行跨領域合作，將藝術美感與工程技術完美結合的潛力。</p></div>
+                        </div>
+                    `
+                },
+                 'mars-mission': {
+                    title: '火星任務',
+                    category: '跨領域',
+                    image: 'https://imgcdn.cna.com.tw/www/postwrite/2023/20231107/00356102.20231107417803681M.jpg',
+                    content: `
+                        <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 project-title-fix">WRO 未來工程師挑戰賽 - 火星任務</h3>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full">跨領域</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Arduino</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">天文學</span>
+                            <span class="bg-slate-100 text-slate-800 text-xs font-medium px-2.5 py-0.5 rounded-full">OpenCV</span>
+                        </div>
+                        <img src="https://imgcdn.cna.com.tw/www/postwrite/2023/20231107/00356102.20231107417803681M.jpg" class="w-full h-auto rounded-lg my-6" alt="Mars Rover Project">
+                        <div class="space-y-6 text-slate-600">
+                            <div><h4 class="font-semibold text-lg text-slate-700">挑戰：</h4><p>設計一台能夠模擬在火星表面執行探測任務的機器人，這不僅需要機器人技術，還需要整合天文學知識來理解任務背景與環境限制。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">我的角色與執行過程：</h4><p>我負責機器人的硬體建構與程式設計。這個專案是我從樂高系統轉向Arduino與金屬材料的重要一步。我學習了電路設計、焊接，並首次嘗試使用OpenCV進行基礎的視覺辨識，讓機器人能夠識別特定的標記物。我將在天文社學到的知識應用於任務情境設計中，使專案更具真實感。</p></div>
+                            <div><h4 class="font-semibold text-lg text-slate-700">成果與實證：</h4><p>我們成功打造了一台多功能火星探測車，並在競賽中取得優異成績。這個專案是我跨出舒適圈，主動學習新平台與新技術的關鍵經歷，也展現了我將不同領域知識融會貫通的能力。</p></div>
+                        </div>
+                    `
+                }
+            };
+
+            const timelineContainer = document.getElementById('timeline-container');
+            timelineData.forEach((item, index) => {
+                const sideClass = item.side === 'left' ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8';
+                const dotSideClass = item.side === 'left' ? 'md:left-1/2 md:-ml-2.5' : 'md:left-1/2 md:-ml-2.5';
+                const timelineElement = `
+                    <div class="relative timeline-item">
+                        <div class="md:flex items-center ${item.side === 'right' ? 'md:flex-row-reverse' : ''}">
+                            <div class="md:w-1/2">
+                                <div class="flex flex-col items-center md:items-stretch ${item.side === 'right' ? 'md:items-end' : 'md:items-start'}">
+                                    <div class="w-full p-6 bg-white rounded-lg shadow-md">
+                                        <p class="text-lg font-bold text-cyan-700">${item.year}</p>
+                                        <h4 class="mt-2 text-xl font-semibold text-slate-800">${item.title}</h4>
+                                        <p class="mt-2 text-slate-600">${item.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute top-1/2 -translate-y-1/2 w-5 h-5 bg-white rounded-full border-4 border-cyan-600 ${dotSideClass} left-1/2 -ml-2.5 md:ml-0"></div>
+                    </div>
+                `;
+                timelineContainer.innerHTML += timelineElement;
+            });
+
+            const projectGallery = document.getElementById('project-gallery');
+            Object.keys(projectsData).forEach(key => {
+                const project = projectsData[key];
+                const projectElement = document.createElement('div');
+                projectElement.className = 'project-card group cursor-pointer';
+                projectElement.setAttribute('data-category', project.category);
+                projectElement.setAttribute('data-id', key);
+                projectElement.innerHTML = `
+                    <div class="relative overflow-hidden rounded-lg">
+                        <img src="${project.image}" alt="${project.title}" class="w-full h-60 object-cover transform group-hover:scale-110 transition-transform duration-500" onerror="this.onerror=null;this.src='https://placehold.co/600x400/slate/FFFFFF?text=Image+Not+Found';">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                        <div class="absolute bottom-0 left-0 p-4">
+                            <h3 class="text-white text-lg font-bold project-title-fix">${project.title}</h3>
+                            <p class="text-cyan-200 text-sm">${project.category}</p>
+                        </div>
+                    </div>
+                `;
+                projectGallery.appendChild(projectElement);
+            });
+
+            const apcsCtx = document.getElementById('apcsChart').getContext('2d');
+            new Chart(apcsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['觀念題', '實作題'],
+                    datasets: [{
+                        label: '級分',
+                        data: [5, 3],
+                        backgroundColor: ['rgba(8, 145, 178, 0.6)', 'rgba(22, 78, 99, 0.6)'],
+                        borderColor: ['rgb(8, 145, 178)', 'rgb(22, 78, 99)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 5 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            const langCtx = document.getElementById('languageChart').getContext('2d');
+            new Chart(langCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['IELTS'],
+                    datasets: [{
+                        label: '分數',
+                        data: [7.0],
+                        backgroundColor: ['rgba(13, 148, 136, 0.6)'],
+                        borderColor: ['rgb(13, 148, 136)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { 
+                        y: { beginAtZero: true, max: 9.0 }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `IELTS: ${context.raw} / 9.0`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const radarCtx = document.getElementById('skillsRadarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['C/C++', 'Arduino', '系統整合', '解決問題', '自主學習', '團隊合作'],
+                    datasets: [{
+                        label: '能力評估',
+                        data: [5, 5, 4, 5, 5, 4],
+                        fill: true,
+                        backgroundColor: 'rgba(8, 145, 178, 0.2)',
+                        borderColor: 'rgb(8, 145, 178)',
+                        pointBackgroundColor: 'rgb(8, 145, 178)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(8, 145, 178)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 2 }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.1)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            pointLabels: { font: { size: 14 } },
+                            suggestedMin: 0,
+                            suggestedMax: 5,
+                            ticks: {
+                                stepSize: 1,
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active', 'bg-cyan-600', 'text-white'));
+                    filterBtns.forEach(b => b.classList.add('bg-white', 'text-slate-600'));
+                    btn.classList.add('active', 'bg-cyan-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-slate-600');
+
+                    const filter = btn.getAttribute('data-filter');
+                    projectCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            const modal = document.getElementById('project-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalBody = document.getElementById('modal-body');
+            const closeModalBtn = document.getElementById('close-modal');
+
+            projectGallery.addEventListener('click', (e) => {
+                const card = e.target.closest('.project-card');
+                if (card) {
+                    const projectId = card.getAttribute('data-id');
+                    const projectData = projectsData[projectId];
+                    modalBody.innerHTML = projectData.content;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    modalContent.classList.add('modal-enter');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            function closeModal() {
+                modalContent.classList.remove('modal-enter');
+                modalContent.classList.add('modal-leave');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    modalContent.classList.remove('modal-leave');
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+
+
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            mobileMenu.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+            
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('shadow-md');
+                } else {
+                    header.classList.remove('shadow-md');
+                }
+            });
+
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            timelineItems.forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>
